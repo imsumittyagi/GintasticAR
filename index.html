@@ -15,12 +15,44 @@
     <script type="module">
       import * as THREE from 'three';
       import { MindARThree } from 'mindar-image-three';
+      
+
       const mindarThree = new MindARThree({
 	container: document.querySelector("#container"),
 	imageTargetSrc: "./targets.mind"
       });
       const {renderer, scene, camera} = mindarThree;
+
+      const loader = new THREE.ObjectLoader();
+
+
       const anchor = mindarThree.addAnchor(0);
+
+
+      loader.load(
+	// resource URL
+	"./model.json",
+
+	// onLoad callback
+	// Here the loaded data is assumed to be an object
+	function ( obj ) {
+		// Add the loaded object to the scene
+		anchor.group.add(obj);
+	},
+
+	// onProgress callback
+	function ( xhr ) {
+		console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+	},
+
+	// onError callback
+	function ( err ) {
+		console.error( 'An error happened' );
+	}
+);
+
+      
+
       const geometry = new THREE.PlaneGeometry(1, 0.55);
       const material = new THREE.MeshBasicMaterial( {color: 0x00ffff, transparent: true, opacity: 0.5} );
       const plane = new THREE.Mesh( geometry, material );
